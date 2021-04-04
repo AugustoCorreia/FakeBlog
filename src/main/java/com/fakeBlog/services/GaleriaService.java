@@ -1,11 +1,13 @@
 package com.fakeBlog.services;
 
-import com.fakeBlog.entity.ComentarioEntity;
-import com.fakeBlog.mapper.ComentarioMapper;
-import com.fakeBlog.model.ComentarioRequest;
-import com.fakeBlog.repository.ComentarioRepository;
+import com.fakeBlog.entity.GaleriaEntity;
+import com.fakeBlog.mapper.GaleriaMapper;
+import com.fakeBlog.model.GaleriaRequest;
+import com.fakeBlog.repository.GaleriaRepository;
+
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -14,26 +16,26 @@ import org.springframework.stereotype.Component;
 @Component
 @AllArgsConstructor
 @NoArgsConstructor
-public class ComentarioService implements IComentarioService{
+public class GaleriaService  implements IGaleriaService{
 
-    private ComentarioRepository repository;
+    private GaleriaRepository repository;
 
-    private ComentarioMapper mapper;
+    private GaleriaMapper mapper;
 
     @Override
-    public Page<ComentarioEntity> getAll(Pageable pageable) {
+    public Page<?> getAll(Pageable pageable) {
         return repository.findAll(pageable);
     }
 
     @Override
-    public ResponseEntity<ComentarioEntity> getById(Long id){
+    public ResponseEntity<?> getById(Long id){
         return repository.findById(id)
                 .map(record -> ResponseEntity.ok().body(record
                 )).orElse(ResponseEntity.notFound().build());
     }
 
     @Override
-    public ResponseEntity<ComentarioEntity> create(ComentarioRequest request) {
+    public ResponseEntity<?> create(GaleriaRequest request) {
         return ResponseEntity.ok().body(
                 repository.save(
                         mapper.mapRequestToEntity(request)
@@ -41,10 +43,10 @@ public class ComentarioService implements IComentarioService{
     }
 
     @Override
-    public ResponseEntity<ComentarioEntity> update(ComentarioRequest request, Long id) {
+    public ResponseEntity<?> update(GaleriaRequest request, Long id) {
         return repository.findById(id)
                 .map(record -> {
-                    ComentarioEntity updated = mapper.mapRequestToUpdateEntity(request,record) ;
+                    GaleriaEntity updated = mapper.mapRequestToUpdateEntity(request,record) ;
                     return ResponseEntity.ok().body(
                             repository.save(updated)
                     );
@@ -52,12 +54,11 @@ public class ComentarioService implements IComentarioService{
     }
 
     @Override
-    public ResponseEntity<ComentarioEntity> delete(Long id) {
+    public ResponseEntity<?> delete(Long id) {
         if(!repository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
         repository.deleteById(id);
         return ResponseEntity.ok().build();
     }
-
 }
